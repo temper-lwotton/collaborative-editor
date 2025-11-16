@@ -1,0 +1,5 @@
+{
+  "name": "lexical-yjs-editor",
+  "main": "server.ts",
+  "port": 1999
+}
