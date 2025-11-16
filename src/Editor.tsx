@@ -26,6 +26,8 @@ import { InspectorControls } from "./InspectorControls";
 import { SlashCommandsPlugin } from "./SlashCommandsPlugin";
 import { CursorPresencePlugin } from "./CursorPresencePlugin";
 import { CommentNode } from "./nodes/CommentNode";
+import { RowNode } from "./nodes/RowNode";
+import { ColumnNode } from "./nodes/ColumnNode";
 
 import "./styles.css";
 
@@ -107,6 +109,8 @@ export function Editor() {
             ListNode,
             ListItemNode,
             CommentNode,
+            RowNode,
+            ColumnNode,
         ],
     };
 
