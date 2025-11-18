@@ -25,6 +25,7 @@ import { FloatingToolbar } from "./FloatingToolbar";
 import { InspectorControls } from "./InspectorControls";
 import { SlashCommandsPlugin } from "./SlashCommandsPlugin";
 import { CursorPresencePlugin } from "./CursorPresencePlugin";
+import { InsertBlockButton } from "./InsertBlockButton";
 import { CommentNode } from "./nodes/CommentNode";
 import { RowNode } from "./nodes/RowNode";
 import { ColumnNode } from "./nodes/ColumnNode";
@@ -42,6 +43,7 @@ function EditorContent({ commentsDoc }: { commentsDoc: Y.Doc | null }) {
                 contentEditable={
                     <div className="editor-content-wrapper">
                         <ContentEditable className="editor-input" />
+                        <InsertBlockButton />
                     </div>
                 }
                 placeholder={

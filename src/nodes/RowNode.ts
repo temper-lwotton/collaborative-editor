@@ -107,6 +107,14 @@ export class RowNode extends ElementNode {
     canInsertTextAfter(): boolean {
         return false;
     }
+
+    isShadowRoot(): boolean {
+        return true;
+    }
+
+    isIsolated(): boolean {
+        return true;
+    }
 }
 
 function convertRowElement(domNode: HTMLElement): DOMConversionOutput | null {

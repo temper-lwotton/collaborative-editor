@@ -1438,3 +1438,119 @@ li {
     font-size: 13px;
     text-align: center;
 }
+
+/* Insert Block Button */
+.insert-block-button-container {
+    position: relative;
+    margin-top: 16px;
+    padding-bottom: 40px;
+}
+
+.insert-block-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #1e1e1e;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.insert-block-button:hover {
+    background: #f5f5f5;
+    border-color: #1e1e1e;
+}
+
+.insert-block-button svg {
+    flex-shrink: 0;
+}
+
+/* Insert Block Menu */
+.insert-block-menu {
+    position: absolute;
+    top: calc(100% - 40px);
+    left: 0;
+    z-index: 1000;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 38px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    min-width: 260px;
+    max-width: 320px;
+    animation: slideUpAndFade 0.2s ease-out;
+}
+
+@keyframes slideUpAndFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.insert-block-menu__header {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.insert-block-menu__list {
+    padding: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.insert-block-menu__item {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: calc(100% - 24px);
+    box-sizing: border-box;
+    transition: background-color 0.1s;
+}
+
+.insert-block-menu__item:hover {
+    background-color: #f5f5f5;
+}
+
+.insert-block-menu__item--selected {
+    background-color: #e8f0fe;
+}
+
+.insert-block-menu__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: #f0f0f0;
+    font-size: 16px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.insert-block-menu__item--selected .insert-block-menu__icon {
+    background: #d0e2ff;
+}
+
+.insert-block-menu__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e1e1e;
+}

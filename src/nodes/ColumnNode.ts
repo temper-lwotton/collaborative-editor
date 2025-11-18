@@ -105,6 +105,22 @@ export class ColumnNode extends ElementNode {
     canBeEmpty(): boolean {
         return false;
     }
+
+    canInsertTextBefore(): boolean {
+        return false;
+    }
+
+    canInsertTextAfter(): boolean {
+        return false;
+    }
+
+    isShadowRoot(): boolean {
+        return true;
+    }
+
+    isIsolated(): boolean {
+        return true;
+    }
 }
 
 function convertColumnElement(domNode: HTMLElement): DOMConversionOutput | null {
