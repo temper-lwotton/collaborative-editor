@@ -26,6 +26,8 @@ import { InspectorControls } from "./InspectorControls";
 import { SlashCommandsPlugin } from "./SlashCommandsPlugin";
 import { CursorPresencePlugin } from "./CursorPresencePlugin";
 import { InsertBlockButton } from "./InsertBlockButton";
+import { ColumnFloatingMenu } from "./ColumnFloatingMenu";
+import { BlockHierarchy } from "./BlockHierarchy";
 import { CommentNode } from "./nodes/CommentNode";
 import { RowNode } from "./nodes/RowNode";
 import { ColumnNode } from "./nodes/ColumnNode";
@@ -36,6 +38,7 @@ function EditorContent({ commentsDoc }: { commentsDoc: Y.Doc | null }) {
     return (
         <>
             <FloatingToolbar />
+            <ColumnFloatingMenu />
             <PresenceLayer />
             <InlineCommentsPlugin doc={commentsDoc} />
 
@@ -121,7 +124,10 @@ export function Editor() {
             <LexicalComposer initialConfig={initialConfig}>
                 <div className="editor-root">
                     <div className="editor-layout">
-                        {/* Left: main editor */}
+                        {/* Left: Block Hierarchy */}
+                        <BlockHierarchy />
+
+                        {/* Center: main editor */}
                         <div className="editor-inner">
                             <EditorContent commentsDoc={commentsDoc} />
 
@@ -132,7 +138,7 @@ export function Editor() {
                             />
                         </div>
 
-                        {/* Middle: comments sidebar (shares Y.Doc with editor) */}
+                        {/* Middle-Right: comments sidebar (shares Y.Doc with editor) */}
                         <CommentsSidebar doc={commentsDoc} />
 
                         {/* Right: Inspector Controls (Gutenberg-style) */}

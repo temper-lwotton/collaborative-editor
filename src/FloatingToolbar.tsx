@@ -23,6 +23,8 @@ import { INSERT_UNORDERED_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND, REMOVE_LIST
 import { mergeRegister } from "@lexical/utils";
 import { FloatingLinkEditor } from "./FloatingLinkEditor";
 import { CommentInputPopover } from "./comments/CommentInputPopover";
+import { $isColumnNode } from "./nodes/ColumnNode";
+import { $isRowNode } from "./nodes/RowNode";
 
 export function FloatingToolbar() {
     const [editor] = useLexicalComposerContext();
@@ -33,6 +35,7 @@ export function FloatingToolbar() {
     const [activeFormats, setActiveFormats] = useState<string[]>([]);
     const [isCommentPopoverOpen, setIsCommentPopoverOpen] = useState(false);
     const [commentAnchorPosition, setCommentAnchorPosition] = useState<{ top: number; left: number } | null>(null);
+    const [parentBlock, setParentBlock] = useState<{ key: string; label: string } | null>(null);
 
     const updateToolbar = useCallback(() => {
         const selection = $getSelection();
@@ -58,6 +61,34 @@ export function FloatingToolbar() {
         if (selection.hasFormat('underline')) formats.push('underline');
         if (selection.hasFormat('code')) formats.push('code');
         setActiveFormats(formats);
+
+        // Check for selectable parent block
+        const nodes = selection.getNodes();
+        const anchorNode = nodes[0];
+
+        let currentNode = anchorNode;
+        let foundParent: { key: string; label: string } | null = null;
+
+        // Traverse up to find a meaningful parent block (Column, Row, etc.)
+        while (currentNode) {
+            const parent = currentNode.getParent();
+            if (!parent || parent.getType() === 'root') {
+                break;
+            }
+
+            // Check if this parent is a selectable block type
+            if ($isColumnNode(parent)) {
+                foundParent = { key: parent.getKey(), label: 'Column' };
+                break;
+            } else if ($isRowNode(parent)) {
+                foundParent = { key: parent.getKey(), label: 'Row' };
+                break;
+            }
+
+            currentNode = parent;
+        }
+
+        setParentBlock(foundParent);
 
         const domRange = nativeSelection.getRangeAt(0);
         const rangeRect = domRange.getBoundingClientRect();
@@ -152,7 +183,7 @@ export function FloatingToolbar() {
             let blockNode = anchorNode;
             let parent = blockNode.getParent();
 
-            while (parent && !parent.isRootNode()) {
+            while (parent && parent.getType() !== 'root') {
                 blockNode = parent;
                 parent = parent.getParent();
             }
@@ -181,7 +212,7 @@ export function FloatingToolbar() {
             let blockNode = anchorNode;
             let parent = blockNode.getParent();
 
-            while (parent && !parent.isRootNode()) {
+            while (parent && parent.getType() !== 'root') {
                 blockNode = parent;
                 parent = parent.getParent();
             }
@@ -195,6 +226,19 @@ export function FloatingToolbar() {
 
             const nextSibling = siblings[index + 1];
             blockNode.insertAfter(nextSibling);
+        });
+    };
+
+    const selectParentBlock = () => {
+        if (!parentBlock) return;
+
+        editor.update(() => {
+            const node = $getNodeByKey(parentBlock.key);
+            if (node) {
+                // Use Lexical's native select() method to select the entire parent node
+                node.selectStart();
+                node.selectEnd();
+            }
         });
     };
 
@@ -493,6 +537,42 @@ export function FloatingToolbar() {
                             </DropdownMenu.Content>
                         </DropdownMenu.Portal>
                     </DropdownMenu.Root>
+
+                    {parentBlock && (
+                        <>
+                            <Separator.Root
+                                className="floating-toolbar__separator"
+                                decorative
+                                orientation="vertical"
+                            />
+
+                            {/* Select Parent Block Button */}
+                            <Tooltip.Root>
+                                <Tooltip.Trigger asChild>
+                                    <button
+                                        className="floating-toolbar__button"
+                                        onClick={selectParentBlock}
+                                        aria-label={`Select ${parentBlock.label}`}
+                                    >
+                                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                            <path
+                                                d="M2.14645 11.1464C1.95118 11.3417 1.95118 11.6583 2.14645 11.8536C2.34171 12.0488 2.65829 12.0488 2.85355 11.8536L6.85355 7.85355C7.04882 7.65829 7.04882 7.34171 6.85355 7.14645L2.85355 3.14645C2.65829 2.95118 2.34171 2.95118 2.14645 3.14645C1.95118 3.34171 1.95118 3.65829 2.14645 3.85355L5.79289 7.5L2.14645 11.1464ZM8.14645 11.1464C7.95118 11.3417 7.95118 11.6583 8.14645 11.8536C8.34171 12.0488 8.65829 12.0488 8.85355 11.8536L12.8536 7.85355C13.0488 7.65829 13.0488 7.34171 12.8536 7.14645L8.85355 3.14645C8.65829 2.95118 8.34171 2.95118 8.14645 3.14645C7.95118 3.34171 7.95118 3.65829 8.14645 3.85355L11.7929 7.5L8.14645 11.1464Z"
+                                                fill="currentColor"
+                                                fillRule="evenodd"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    </button>
+                                </Tooltip.Trigger>
+                                <Tooltip.Portal>
+                                    <Tooltip.Content className="floating-toolbar__tooltip" sideOffset={5}>
+                                        Select {parentBlock.label}
+                                        <Tooltip.Arrow className="floating-toolbar__tooltip-arrow" />
+                                    </Tooltip.Content>
+                                </Tooltip.Portal>
+                            </Tooltip.Root>
+                        </>
+                    )}
 
                     <Separator.Root
                         className="floating-toolbar__separator"
